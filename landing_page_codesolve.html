@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeSolve | Transformando Desafios em Linhas de Código</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #070b14;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Fixed Background Wallpaper Layer */
+        .bg-wallpaper-fixed {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('assets/hero_bg.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            z-index: -30;
+            pointer-events: none;
+            opacity: 0.28;
+            filter: contrast(1.15) brightness(0.85);
+        }
+
+        /* Background Grid Pattern Overlay */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 242, 254, 0.035) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 242, 254, 0.035) 1px, transparent 1px);
+        }
+
+        /* Fixed Blurred Python Typing Canvas/Container */
+        .bg-python-stream {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -20;
+            pointer-events: none;
+            overflow: hidden;
+            font-family: 'Fira Code', monospace;
+            filter: blur(1.5px);
+            opacity: 0.22;
+            padding: 2.5rem;
+            line-height: 1.6;
+            mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.3) 100%);
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 40%, rgba(0,0,0,0.3) 100%);
+        }
+
+        .glow-cyan {
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.25);
+        }
+
+        .glow-cyan-lg {
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.35);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 16px rgba(0, 242, 254, 0.65);
+        }
+
+        .glass-card {
+            background: rgba(13, 21, 39, 0.76);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 242, 254, 0.16);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 242, 254, 0.45);
+            box-shadow: 0 10px 30px -10px rgba(0, 242, 254, 0.2);
+        }
+
+        .pulse-beacon {
+            animation: beacon 2s infinite;
+        }
+
+        @keyframes beacon {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 254, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 12px rgba(0, 242, 254, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 242, 254, 0); }
+        }
+
+        /* Typing Dots Animation for AI Chat */
+        .typing-dot {
+            animation: typingAnimation 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingAnimation {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070b14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #182744;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f2fe;
+        }
+    </style>
+</head>
+<body class="bg-[#070b14] text-slate-100 antialiased selection:bg-[#00f2fe] selection:text-black bg-grid-pattern relative min-h-screen">
+
+    <!-- 1. FIXED BACKGROUND WALLPAPER (hero_bg.jpg) -->
+    <div class="bg-wallpaper-fixed"></div>
+    <!-- Dark Gradient Overlay for optimal text readability and contrast -->
+    <div class="fixed inset-0 w-full h-full pointer-events-none z-[-25] bg-gradient-to-b from-[#070b14]/75 via-[#070b14]/85 to-[#070b14]/95"></div>
+
+    <!-- 2. FIXED BLURRED PYTHON TYPING CODE ANIMATION -->
+    <div class="bg-python-stream text-xs sm:text-sm">
+        <pre id="python-bg-code" class="text-cyan-300/80 font-mono select-none"></pre>
+    </div>
+
+    <!-- 3. AMBIENT GLOW ORBS -->
+    <div class="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none z-[-10]"></div>
+    <div class="fixed bottom-1/4 right-10 w-[450px] h-[450px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none z-[-10]"></div>
+
+    <!-- Header Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-[#070b14]/90 backdrop-blur-md border-b border-[#182744]/80 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo Brand with User's Official PNG Badge -->
+            <a href="#" class="flex items-center gap-3.5 group">
+                <div class="relative w-11 h-11 rounded-xl bg-[#0d1527] border border-[#00f2fe]/40 flex items-center justify-center p-1.5 shadow-[0_0_20px_rgba(0,242,254,0.35)] group-hover:border-[#00f2fe] group-hover:shadow-[0_0_30px_rgba(0,242,254,0.7)] transition-all">
+                    <!-- User's Official CodeSolve Logo -->
+                    <img src="assets/logo.png" alt="CodeSolve Logo" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(0,242,254,0.7)] group-hover:scale-105 transition-transform">
+                </div>
+                <div>
+                    <span class="font-extrabold text-xl tracking-wider text-white font-mono group-hover:text-[#00f2fe] transition-colors flex items-center gap-1">
+                        Code<span class="text-[#00f2fe]">Solve</span>
+                    </span>
+                    <span class="block text-[10px] font-mono text-slate-400 tracking-wider uppercase font-semibold">Software & AI Tech</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center space-x-7 text-sm font-medium text-slate-300">
+                <a href="#inicio" class="hover:text-[#00f2fe] transition-colors">Início</a>
+                <a href="#servicos" class="hover:text-[#00f2fe] transition-colors">Serviços</a>
+                <a href="#solucoes" class="hover:text-[#00f2fe] transition-colors">Soluções</a>
+                <a href="#simulador" class="hover:text-[#00f2fe] transition-colors">Simulador</a>
+                <a href="#demonstracao" class="hover:text-[#00f2fe] transition-colors">Demo IA</a>
+                <a href="#metodologia" class="hover:text-[#00f2fe] transition-colors">Como Funciona</a>
+                <a href="#faq" class="hover:text-[#00f2fe] transition-colors">Dúvidas</a>
+                <a href="#contato" class="hover:text-[#00f2fe] transition-colors">Contato</a>
+            </nav>
+
+            <!-- Header CTA Button -->
+            <div class="hidden sm:flex items-center gap-3">
+                <a href="https://wa.me/5585986506342?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20CodeSolve%20e%20gostaria%20de%20solicitar%20um%20or%C3%A7amento." target="_blank" rel="noopener noreferrer" class="relative inline-flex items-center justify-center px-5 py-2.5 text-sm font-bold text-black bg-gradient-to-r from-[#00f2fe] to-[#4facfe] rounded-xl shadow-[0_0_20px_rgba(0,242,254,0.4)] hover:shadow-[0_0_30px_rgba(0,242,254,0.7)] transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-brands fa-whatsapp mr-2 text-base"></i> Solicitar Orçamento
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="mobile-menu-btn" aria-label="Abrir menu" class="lg:hidden text-slate-300 hover:text-[#00f2fe] text-2xl p-2 focus:outline-none">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Dropdown -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-[#0a0f1d]/98 border-b border-[#182744] px-6 py-5 space-y-4 font-medium backdrop-blur-xl animate-fadeIn">
+            <a href="#inicio" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Início</a>
+            <a href="#servicos" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Serviços</a>
+            <a href="#solucoes" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Soluções</a>
+            <a href="#simulador" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Simulador de Projeto</a>
+            <a href="#demonstracao" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Demo Assistente IA</a>
+            <a href="#metodologia" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Como Funciona</a>
+            <a href="#faq" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe] border-b border-slate-800/60">Dúvidas Frequentes</a>
+            <a href="#contato" class="mobile-link block py-2 text-slate-200 hover:text-[#00f2fe]">Contato</a>
+            <a href="https://wa.me/5585986506342?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20CodeSolve%20e%20gostaria%20de%20solicitar%20um%20or%C3%A7amento." target="_blank" rel="noopener noreferrer" class="block text-center py-3 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-bold rounded-xl shadow-lg mt-2">
+                <i class="fa-brands fa-whatsapp mr-1.5"></i> Falar no WhatsApp
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative pt-36 pb-20 md:pt-48 md:pb-28 overflow-hidden z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Hero Content -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-7">
+                    
+                    <!-- Status Badge -->
+                    <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#0d1527] border border-[#00f2fe]/40 text-[#00f2fe] text-xs font-mono shadow-[0_0_15px_rgba(0,242,254,0.15)]">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#00f2fe] pulse-beacon"></span>
+                        <span>Disponível para novos projetos • Sob Medida</span>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15]">
+                        Transformando Desafios em <br class="hidden sm:inline"/>
+                        <span class="bg-gradient-to-r from-[#00f2fe] via-[#00e5ff] to-[#4facfe] bg-clip-text text-transparent text-glow">
+                            [ linhas de código ]
+                        </span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-slate-300 text-lg sm:text-xl max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                        Desenvolvimento sob demanda de <strong class="text-white font-semibold">Web Apps</strong>, <strong class="text-white font-semibold">Sistemas de Gestão para PMEs</strong> e <strong class="text-[#00f2fe] font-semibold">Assistentes Virtuais com IA</strong> para automatizar e escalar seu negócio.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#simulador" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-extrabold rounded-xl shadow-[0_0_25px_rgba(0,242,254,0.4)] hover:shadow-[0_0_40px_rgba(0,242,254,0.7)] transition-all transform hover:-translate-y-0.5 text-center flex items-center justify-center gap-2.5">
+                            <i class="fa-solid fa-calculator text-base"></i> Simular Meu Projeto
+                        </a>
+                        <a href="https://wa.me/5585986506342?text=Ol%C3%A1!%20Gostaria%20de%20conversar%20sobre%20uma%20ideia%20de%20software%20com%20a%20CodeSolve." target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4 bg-[#0d1527] border border-[#182744] text-slate-200 font-semibold rounded-xl hover:border-[#00f2fe]/60 hover:bg-[#131e38] transition-all text-center flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-[#00f2fe]"></i> Falar com Especialista
+                        </a>
+                    </div>
+
+                    <!-- Tech Stack Indicators -->
+                    <div class="pt-6 border-t border-[#182744]/60 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-400 font-mono">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-code text-[#00f2fe]"></i> Clean Architecture</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-robot text-[#00f2fe]"></i> IA Generativa Integrada</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-[#00f2fe]"></i> Alta Segurança</span>
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-bolt text-[#00f2fe]"></i> Entrega Ágil</span>
+                    </div>
+
+                </div>
+
+                <!-- Right Hero Visual - Interactive Code Terminal -->
+                <div class="lg:col-span-5 relative">
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden border border-[#00f2fe]/35">
+                        
+                        <!-- Terminal Tabs / Header -->
+                        <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-[#182744]">
+                            <div class="flex space-x-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                            </div>
+                            <div class="flex items-center gap-2 bg-[#070b14]/90 px-3 py-1 rounded-md border border-[#182744]">
+                                <i class="fa-solid fa-file-code text-[#00f2fe] text-xs"></i>
+                                <span class="text-xs font-mono text-slate-300">CodeSolve_Solution.ts</span>
+                            </div>
+                            <span class="text-[10px] font-mono uppercase text-[#00f2fe] bg-[#00f2fe]/10 px-2 py-0.5 rounded border border-[#00f2fe]/20">v2.4 Active</span>
+                        </div>
+
+                        <!-- Terminal Code Simulation -->
+                        <div class="font-mono text-xs sm:text-sm space-y-2.5 text-slate-300 leading-relaxed">
+                            <p class="text-slate-500">// 1. Definindo solução sob medida para seu negócio</p>
+                            <p><span class="text-purple-400">const</span> <span class="text-[#00f2fe]">empresaCliente</span> = <span class="text-emerald-400">"Sua Empresa"</span>;</p>
+                            <p><span class="text-purple-400">async function</span> <span class="text-blue-400">desenvolverSolucao</span>() {</p>
+                            <p class="pl-4 text-slate-400"><span class="text-purple-400">const</span> entrega = <span class="text-purple-400">await</span> CodeSolve.build({</p>
+                            <p class="pl-8 text-emerald-400">tipo: <span class="text-slate-200">"Web App + Automação IA"</span>,</p>
+                            <p class="pl-8 text-emerald-400">atendimento: <span class="text-slate-200">"WhatsApp 24/7"</span>,</p>
+                            <p class="pl-8 text-emerald-400">bancoDados: <span class="text-slate-200">"Nuvem Segura & Otimizada"</span>,</p>
+                            <p class="pl-8 text-emerald-400">prazoEstimado: <span class="text-[#00f2fe]">"Entrega recorde em dias"</span></p>
+                            <p class="pl-4">});</p>
+                            <p class="pl-4"><span class="text-purple-400">return</span> entrega.deployInstantaneo();</p>
+                            <p>}</p>
+                        </div>
+
+                        <!-- Terminal Status & Live Output Box -->
+                        <div class="mt-4 pt-3 border-t border-[#182744]">
+                            <div class="p-3 rounded-xl bg-[#070b14]/95 border border-[#00f2fe]/30 text-xs font-mono flex items-center justify-between">
+                                <span class="flex items-center gap-2 text-[#00f2fe]">
+                                    <i class="fa-solid fa-circle-check text-emerald-400"></i> Status: Pronto para Produção
+                                </span>
+                                <button onclick="runCodeDemo(this)" class="px-2.5 py-1 rounded bg-[#00f2fe]/20 hover:bg-[#00f2fe] text-[#00f2fe] hover:text-black transition-colors text-[11px] font-bold">
+                                    <i class="fa-solid fa-play mr-1"></i> Executar
+                                </button>
+                            </div>
+                            <div id="code-output-box" class="hidden mt-2 p-2.5 bg-emerald-950/40 border border-emerald-500/30 rounded-lg text-[11px] font-mono text-emerald-300">
+                                <i class="fa-solid fa-check-double mr-1.5"></i> Compilado com sucesso! Sistema 100% otimizado e responsivo.
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats / Metrics Bar -->
+    <section class="py-12 relative z-10 border-y border-[#182744]/70 bg-[#0a0f1d]/70 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                <div class="p-4 rounded-xl bg-[#0d1527]/50 border border-[#182744]/60">
+                    <div class="text-3xl sm:text-4xl font-black text-[#00f2fe] font-mono mb-1">100%</div>
+                    <p class="text-xs sm:text-sm text-slate-300 font-medium">Desenvolvimento Sob Medida</p>
+                </div>
+                <div class="p-4 rounded-xl bg-[#0d1527]/50 border border-[#182744]/60">
+                    <div class="text-3xl sm:text-4xl font-black text-[#00f2fe] font-mono mb-1">24/7</div>
+                    <p class="text-xs sm:text-sm text-slate-300 font-medium">Automação & Atendimento Ativo</p>
+                </div>
+                <div class="p-4 rounded-xl bg-[#0d1527]/50 border border-[#182744]/60">
+                    <div class="text-3xl sm:text-4xl font-black text-[#00f2fe] font-mono mb-1">7 a 15d</div>
+                    <p class="text-xs sm:text-sm text-slate-300 font-medium">Prazo Ágil de Lançamento</p>
+                </div>
+                <div class="p-4 rounded-xl bg-[#0d1527]/50 border border-[#182744]/60">
+                    <div class="text-3xl sm:text-4xl font-black text-[#00f2fe] font-mono mb-1">Direto</div>
+                    <p class="text-xs sm:text-sm text-slate-300 font-medium">Suporte via Telegram & WhatsApp</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicos" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] text-xs font-mono uppercase tracking-widest">
+                    <i class="fa-solid fa-cubes"></i> Nossos Serviços
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">O que a CodeSolve constrói para você?</h2>
+                <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                    Desenvolvimento tecnológico focado em resolver dores operacionais, digitalizar rotinas manuais e acelerar a captação de clientes.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Service Card 1 -->
+                <div class="glass-card rounded-2xl p-7 transition-all duration-300 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] text-2xl mb-6 group-hover:scale-110 group-hover:bg-[#00f2fe] group-hover:text-black transition-all">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-[#00f2fe] transition-colors">Web Apps Modernos</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Aplicações web ultra rápidas, seguras e com design moderno adaptado para qualquer celular ou computador.
+                        </p>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-2.5 font-mono pt-4 border-t border-[#182744]">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Painéis Administrativos</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Plataformas SaaS & Portais</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Landing Pages de Alta Conversão</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="glass-card rounded-2xl p-7 transition-all duration-300 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] text-2xl mb-6 group-hover:scale-110 group-hover:bg-[#00f2fe] group-hover:text-black transition-all">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-[#00f2fe] transition-colors">Sistemas para PME</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Software sob medida para o tamanho da sua operação. Controle clientes, pedidos e finanças sem planilhas confusas.
+                        </p>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-2.5 font-mono pt-4 border-t border-[#182744]">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Gestão de Clientes (CRM)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Estoque, Pedidos & Vendas</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Relatórios em Tempo Real</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="glass-card rounded-2xl p-7 transition-all duration-300 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] text-2xl mb-6 group-hover:scale-110 group-hover:bg-[#00f2fe] group-hover:text-black transition-all">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-[#00f2fe] transition-colors">Assistentes & Chatbots IA</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Atendimento automático 24 horas por dia no WhatsApp e Telegram. Qualifique clientes e agende serviços sem perder vendas.
+                        </p>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-2.5 font-mono pt-4 border-t border-[#182744]">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Integração com WhatsApp Oficial</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Respostas Humanizadas com IA</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Agendamento & Triagem Direta</li>
+                    </ul>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div class="glass-card rounded-2xl p-7 transition-all duration-300 hover:-translate-y-2 group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] text-2xl mb-6 group-hover:scale-110 group-hover:bg-[#00f2fe] group-hover:text-black transition-all">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 group-hover:text-[#00f2fe] transition-colors">Automação de Rotinas</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Elimine tarefas chatas e repetitivas. Conecte planilhas, bancos de dados, emissão de cobranças e notificações instantâneas.
+                        </p>
+                    </div>
+                    <ul class="text-xs text-slate-300 space-y-2.5 font-mono pt-4 border-t border-[#182744]">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Conexão de APIs & Bancos</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Alertas & Cobranças via PIX</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-[#00f2fe]"></i> Redução de Custos e Erros</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Showcase -->
+    <section id="solucoes" class="py-20 relative z-10 bg-[#0a0f1d]/60 border-t border-[#182744]/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] text-xs font-mono uppercase tracking-widest">
+                    <i class="fa-solid fa-layer-group"></i> Exemplos Práticos
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold">Soluções prontas para impulsionar seu nicho</h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Veja como transformamos processos comuns em sistemas digitais altamente produtivos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Showcase 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-[#182744] hover:border-[#00f2fe]/50 transition-all group">
+                    <div class="p-6 bg-[#0d1527]/90 border-b border-[#182744] flex items-center justify-between">
+                        <span class="text-xs font-mono text-[#00f2fe] uppercase font-bold"><i class="fa-solid fa-calendar-check mr-1.5"></i> Agendamentos</span>
+                        <span class="text-[11px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/20">Alta Demanda</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h4 class="text-lg font-bold text-white group-hover:text-[#00f2fe] transition-colors">Sistema de Agendamento Automático</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Ideal para barbearias, clínicas, salões e consultorias. O cliente agenda sozinho pelo link ou WhatsApp e o profissional recebe a notificação sem conflito de horários.
+                        </p>
+                        <div class="pt-3 flex flex-wrap gap-1.5">
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Lembretes WhatsApp</span>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Pagamento Sinal PIX</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Showcase 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-[#182744] hover:border-[#00f2fe]/50 transition-all group">
+                    <div class="p-6 bg-[#0d1527]/90 border-b border-[#182744] flex items-center justify-between">
+                        <span class="text-xs font-mono text-[#00f2fe] uppercase font-bold"><i class="fa-solid fa-chart-line mr-1.5"></i> Gestão Comercial</span>
+                        <span class="text-[11px] bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-500/20">Customizável</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h4 class="text-lg font-bold text-white group-hover:text-[#00f2fe] transition-colors">Dashboard & CRM de Vendas</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Controle total de clientes, propostas em andamento, ticket médio e contas a pagar/receber em gráficos claros e fáceis de entender.
+                        </p>
+                        <div class="pt-3 flex flex-wrap gap-1.5">
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Exportação PDF</span>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Multi-Usuários</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Showcase 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden border border-[#182744] hover:border-[#00f2fe]/50 transition-all group">
+                    <div class="p-6 bg-[#0d1527]/90 border-b border-[#182744] flex items-center justify-between">
+                        <span class="text-xs font-mono text-[#00f2fe] uppercase font-bold"><i class="fa-brands fa-whatsapp mr-1.5"></i> Vendedor IA</span>
+                        <span class="text-[11px] bg-purple-500/10 text-purple-400 px-2.5 py-0.5 rounded-full border border-purple-500/20">24 Horas</span>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <h4 class="text-lg font-bold text-white group-hover:text-[#00f2fe] transition-colors">Atendente Inteligente WhatsApp</h4>
+                        <p class="text-slate-400 text-xs leading-relaxed">
+                            Responde dúvidas sobre preços, envia cardápio/catálogo, coleta nome e dados do cliente e transfere para você apenas quando a venda estiver quente.
+                        </p>
+                        <div class="pt-3 flex flex-wrap gap-1.5">
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Zero Espera</span>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#182744] text-slate-300">Disparo de Avisos</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Project Simulator -->
+    <section id="simulador" class="py-24 relative z-10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="glass-card rounded-3xl p-6 sm:p-12 border border-[#00f2fe]/40 shadow-2xl relative">
+                
+                <div class="text-center max-w-2xl mx-auto mb-10 space-y-3">
+                    <span class="text-xs font-mono text-[#00f2fe] uppercase tracking-widest bg-[#00f2fe]/10 px-3.5 py-1 rounded-full border border-[#00f2fe]/30 inline-block font-semibold">
+                        <i class="fa-solid fa-sliders mr-1.5"></i> Ferramenta Interativa
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold">Simulador de Projeto Sob Medida</h2>
+                    <p class="text-slate-400 text-sm">
+                        Escolha os módulos desejados e veja na hora uma estimativa transparente de prazo e investimento!
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Form Options (Left Column) -->
+                    <div class="lg:col-span-7 space-y-6">
+                        
+                        <!-- Step 1: Type of Solution -->
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-300 mb-3 font-semibold">
+                                1. Qual tipo de solução você busca? <span class="text-[#00f2fe]">*</span>
+                            </label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <button type="button" onclick="selectType('webapp', 1200, 10)" id="btn-webapp" class="calc-type-btn p-4 rounded-xl bg-[#0d1527] border border-[#182744] text-center hover:border-[#00f2fe] text-sm transition-all flex flex-col items-center gap-2 group">
+                                    <div class="w-10 h-10 rounded-lg bg-[#00f2fe]/10 flex items-center justify-center text-[#00f2fe] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-globe text-lg"></i>
+                                    </div>
+                                    <span class="font-semibold text-slate-200">Web App</span>
+                                    <span class="text-[10px] font-mono text-slate-400">A partir de R$ 1.200</span>
+                                </button>
+                                <button type="button" onclick="selectType('sistema', 1600, 15)" id="btn-sistema" class="calc-type-btn p-4 rounded-xl bg-[#0d1527] border border-[#182744] text-center hover:border-[#00f2fe] text-sm transition-all flex flex-col items-center gap-2 group">
+                                    <div class="w-10 h-10 rounded-lg bg-[#00f2fe]/10 flex items-center justify-center text-[#00f2fe] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-database text-lg"></i>
+                                    </div>
+                                    <span class="font-semibold text-slate-200">Sistema PME</span>
+                                    <span class="text-[10px] font-mono text-slate-400">A partir de R$ 1.600</span>
+                                </button>
+                                <button type="button" onclick="selectType('bot', 850, 7)" id="btn-bot" class="calc-type-btn p-4 rounded-xl bg-[#0d1527] border border-[#182744] text-center hover:border-[#00f2fe] text-sm transition-all flex flex-col items-center gap-2 group">
+                                    <div class="w-10 h-10 rounded-lg bg-[#00f2fe]/10 flex items-center justify-center text-[#00f2fe] group-hover:scale-110 transition-transform">
+                                        <i class="fa-solid fa-robot text-lg"></i>
+                                    </div>
+                                    <span class="font-semibold text-slate-200">Assistente IA</span>
+                                    <span class="text-[10px] font-mono text-slate-400">A partir de R$ 850</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Extras & Features -->
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-300 mb-3 font-semibold">
+                                2. Módulos e Recursos adicionais:
+                            </label>
+                            <div class="space-y-2.5">
+                                <label class="flex items-center justify-between p-3.5 rounded-xl bg-[#0d1527]/70 border border-[#182744] hover:border-[#00f2fe]/50 cursor-pointer text-sm transition-all">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" onchange="updateCalc()" id="check-auth" class="w-4 h-4 rounded text-[#00f2fe] bg-[#070b14] border-[#182744] focus:ring-0">
+                                        <span class="ml-3 text-slate-200">Login Seguro com Gestão de Usuários</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-[#00f2fe] font-semibold">+ R$ 300</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3.5 rounded-xl bg-[#0d1527]/70 border border-[#182744] hover:border-[#00f2fe]/50 cursor-pointer text-sm transition-all">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" onchange="updateCalc()" id="check-whatsapp" class="w-4 h-4 rounded text-[#00f2fe] bg-[#070b14] border-[#182744] focus:ring-0">
+                                        <span class="ml-3 text-slate-200">Integração WhatsApp / Telegram</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-[#00f2fe] font-semibold">+ R$ 400</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3.5 rounded-xl bg-[#0d1527]/70 border border-[#182744] hover:border-[#00f2fe]/50 cursor-pointer text-sm transition-all">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" onchange="updateCalc()" id="check-dash" class="w-4 h-4 rounded text-[#00f2fe] bg-[#070b14] border-[#182744] focus:ring-0">
+                                        <span class="ml-3 text-slate-200">Painel com Gráficos & Relatórios (PDF/Excel)</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-[#00f2fe] font-semibold">+ R$ 450</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3.5 rounded-xl bg-[#0d1527]/70 border border-[#182744] hover:border-[#00f2fe]/50 cursor-pointer text-sm transition-all">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" onchange="updateCalc()" id="check-pix" class="w-4 h-4 rounded text-[#00f2fe] bg-[#070b14] border-[#182744] focus:ring-0">
+                                        <span class="ml-3 text-slate-200">Cobrança e Pagamento Automático PIX</span>
+                                    </div>
+                                    <span class="text-xs font-mono text-[#00f2fe] font-semibold">+ R$ 350</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Description -->
+                        <div>
+                            <label class="block text-xs font-mono uppercase text-slate-300 mb-2 font-semibold">
+                                3. Resumo da sua ideia ou necessidade:
+                            </label>
+                            <textarea id="calc-notes" rows="3" class="w-full rounded-xl bg-[#070b14]/90 border border-[#182744] p-3 text-slate-200 text-sm focus:outline-none focus:border-[#00f2fe] transition-colors" placeholder="Ex: Preciso de um sistema para automatizar pedidos da minha hamburgueria e avisar no WhatsApp..."></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- Live Breakdown Display (Right Column) -->
+                    <div class="lg:col-span-5 glass-card rounded-2xl p-6 flex flex-col justify-between border-[#00f2fe]/40 bg-[#070b14]/90">
+                        <div>
+                            <div class="flex items-center justify-between pb-4 border-b border-[#182744] mb-5">
+                                <span class="font-mono text-xs uppercase text-[#00f2fe] font-bold flex items-center gap-2">
+                                    <i class="fa-solid fa-receipt"></i> Resumo do Escopo
+                                </span>
+                                <span class="text-[11px] font-mono text-slate-400">Em tempo real</span>
+                            </div>
+
+                            <div class="space-y-4 text-sm">
+                                <div class="flex justify-between items-center text-slate-300 pb-2 border-b border-[#182744]/40">
+                                    <span class="text-slate-400">Tipo Base:</span>
+                                    <span id="summary-type" class="font-mono font-bold text-white text-right">Selecione uma opção</span>
+                                </div>
+                                <div class="flex justify-between items-center text-slate-300 pb-2 border-b border-[#182744]/40">
+                                    <span class="text-slate-400">Módulos Extras:</span>
+                                    <span id="summary-extras" class="font-mono text-[#00f2fe] font-semibold">Nenhum</span>
+                                </div>
+                                <div class="flex justify-between items-center text-slate-300 pb-2 border-b border-[#182744]/40">
+                                    <span class="text-slate-400">Prazo Estimado:</span>
+                                    <span id="summary-time" class="font-mono text-slate-200 font-semibold">-- dias</span>
+                                </div>
+                                <div class="p-3 rounded-lg bg-[#0d1527] border border-[#182744] text-xs text-slate-400 flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-info text-[#00f2fe] shrink-0 mt-0.5"></i>
+                                    <span>Estimativa preliminar. O valor final é alinhado com você sem custos ocultos.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-[#182744]">
+                            <span class="block text-xs text-slate-400 mb-1 font-mono uppercase">Investimento Estimado</span>
+                            <div class="text-3xl sm:text-4xl font-extrabold text-[#00f2fe] font-mono mb-5" id="summary-price">
+                                R$ 0,00
+                            </div>
+
+                            <button onclick="sendToWhatsApp()" class="w-full py-4 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-extrabold rounded-xl shadow-[0_0_20px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.6)] transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                                <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Projeto no WhatsApp
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive AI Assistant Demo Section -->
+    <section id="demonstracao" class="py-24 relative z-10 bg-[#070b14]/90 border-t border-[#182744]/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Description -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-xs font-mono uppercase text-[#00f2fe] tracking-widest bg-[#00f2fe]/10 px-3 py-1 rounded-full border border-[#00f2fe]/30 inline-block font-semibold">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> Demonstração Interativa
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight">
+                        Veja na prática como seu cliente será atendido por uma IA CodeSolve
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Nossos assistentes inteligentes tiram dúvidas 24 horas por dia, colhem informações de orçamentos e agendam atendimentos sem sobrecarregar sua rotina.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] shrink-0 mt-0.5">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Disponibilidade Total 24/7</h4>
+                                <p class="text-xs text-slate-400">Nunca mais perca um cliente que mandou mensagem de madrugada ou no fim de semana.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] shrink-0 mt-0.5">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Linguagem Humanizada</h4>
+                                <p class="text-xs text-slate-400">Respostas naturais no tom da sua marca, entendendo gírias, áudios e perguntas complexas.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3.5">
+                            <div class="w-9 h-9 rounded-xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 flex items-center justify-center text-[#00f2fe] shrink-0 mt-0.5">
+                                <i class="fa-solid fa-bullseye"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Qualificação de Leads</h4>
+                                <p class="text-xs text-slate-400">Filtra curiosos e entrega contatos prontos para fechar contrato com você.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Simulated Chat App -->
+                <div class="lg:col-span-7">
+                    <div class="glass-card rounded-2xl border border-[#00f2fe]/40 overflow-hidden shadow-2xl">
+                        
+                        <!-- Chat Header -->
+                        <div class="p-4 bg-[#0d1527]/95 border-b border-[#182744] flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <div class="w-10 h-10 rounded-xl bg-[#070b14] border border-[#00f2fe]/40 p-1 flex items-center justify-center shadow-[0_0_12px_rgba(0,242,254,0.5)]">
+                                        <img src="assets/logo.png" alt="CodeSolve Avatar" class="w-full h-full object-contain">
+                                    </div>
+                                    <span class="w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#0d1527] absolute -bottom-0.5 -right-0.5"></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-sm text-white flex items-center gap-2">
+                                        Assistente CodeSolve
+                                        <span class="text-[9px] font-mono bg-emerald-500/20 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/30">ONLINE</span>
+                                    </h4>
+                                    <span class="text-[11px] text-[#00f2fe] font-mono">Responde em menos de 1 segundo</span>
+                                </div>
+                            </div>
+                            <span class="text-xs font-mono text-slate-400 hidden sm:inline"><i class="fa-solid fa-terminal mr-1"></i> Live Demo</span>
+                        </div>
+
+                        <!-- Chat Messages Container -->
+                        <div id="chat-box" class="p-4 h-84 overflow-y-auto space-y-4 font-sans text-xs sm:text-sm bg-[#070b14]/95">
+                            
+                            <!-- Bot Welcome Message -->
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-[#0d1527] border border-[#00f2fe]/40 p-1 flex items-center justify-center shrink-0">
+                                    <img src="assets/logo.png" alt="CS" class="w-full h-full object-contain">
+                                </div>
+                                <div class="bg-[#0d1527] p-3.5 rounded-2xl rounded-tl-none border border-[#182744] max-w-[85%] text-slate-200 leading-relaxed shadow-sm">
+                                    Olá! Sou o assistente inteligente da <strong>CodeSolve</strong>. 👋<br>
+                                    Posso esclarecer dúvidas sobre nossos sistemas, calcular orçamentos ou agendar uma reunião rápida. O que você gostaria de saber?
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Quick Prompt Chips -->
+                        <div class="px-4 py-2 bg-[#0a0f1d] border-t border-[#182744] flex items-center gap-2 overflow-x-auto text-[11px]">
+                            <span class="text-slate-400 text-[10px] uppercase font-mono shrink-0"><i class="fa-solid fa-bolt text-[#00f2fe]"></i> Testar:</span>
+                            <button onclick="sendQuickPrompt('Quanto custa para desenvolver um sistema?')" class="px-2.5 py-1 rounded-full bg-[#182744] hover:bg-[#00f2fe] hover:text-black text-slate-200 transition-colors whitespace-nowrap">
+                                💰 Quanto custa?
+                            </button>
+                            <button onclick="sendQuickPrompt('Qual o prazo médio de entrega?')" class="px-2.5 py-1 rounded-full bg-[#182744] hover:bg-[#00f2fe] hover:text-black text-slate-200 transition-colors whitespace-nowrap">
+                                ⏱️ Qual o prazo?
+                            </button>
+                            <button onclick="sendQuickPrompt('Vocês criam bot para WhatsApp?')" class="px-2.5 py-1 rounded-full bg-[#182744] hover:bg-[#00f2fe] hover:text-black text-slate-200 transition-colors whitespace-nowrap">
+                                🤖 Bot para WhatsApp?
+                            </button>
+                            <button onclick="sendQuickPrompt('Como funciona o suporte pós-entrega?')" class="px-2.5 py-1 rounded-full bg-[#182744] hover:bg-[#00f2fe] hover:text-black text-slate-200 transition-colors whitespace-nowrap">
+                                🛡️ Tem garantia?
+                            </button>
+                        </div>
+
+                        <!-- Chat Input Box -->
+                        <div class="p-3 bg-[#0d1527] border-t border-[#182744] flex items-center gap-2">
+                            <input type="text" id="chat-input" onkeypress="handleKeyPress(event)" placeholder="Digite uma dúvida ou escolha um botão acima..." class="flex-1 bg-[#070b14] border border-[#182744] rounded-xl px-4 py-3 text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-[#00f2fe] transition-colors">
+                            <button onclick="sendChatMessage()" aria-label="Enviar mensagem" class="w-11 h-11 rounded-xl bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-bold flex items-center justify-center hover:opacity-90 transition-opacity shrink-0 shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+                                <i class="fa-solid fa-paper-plane text-sm"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Methodology / Process Section -->
+    <section id="metodologia" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-xs font-mono uppercase text-[#00f2fe] tracking-widest bg-[#00f2fe]/10 px-3 py-1 rounded-full border border-[#00f2fe]/30 inline-block font-semibold">
+                    <i class="fa-solid fa-route mr-1.5"></i> Metodologia Transparente
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold">Como tiramos sua ideia do papel?</h2>
+                <p class="text-slate-400 text-sm sm:text-base">
+                    Um fluxo simples, sem enrolação e focado em entregar código pronto funcionando no menor tempo possível.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Step 1 -->
+                <div class="glass-card rounded-2xl p-6 text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] font-mono font-black text-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#00f2fe] group-hover:text-black transition-all shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                        01
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Diagnóstico & Escopo</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Entendemos a dor do seu negócio e definimos as telas, regras e prazos de forma cristalina.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card rounded-2xl p-6 text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] font-mono font-black text-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#00f2fe] group-hover:text-black transition-all shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                        02
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Design & Arquitetura</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Desenhamos a estrutura de banco de dados, fluxo de telas intuitivo e segurança de ponta.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card rounded-2xl p-6 text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] font-mono font-black text-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#00f2fe] group-hover:text-black transition-all shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                        03
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Desenvolvimento Ágil</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Escrevemos código limpo, performático e com IA integrada, com atualizações periódicas de status.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="glass-card rounded-2xl p-6 text-center relative group">
+                    <div class="w-14 h-14 rounded-2xl bg-[#00f2fe]/10 border border-[#00f2fe]/30 text-[#00f2fe] font-mono font-black text-xl flex items-center justify-center mx-auto mb-5 group-hover:bg-[#00f2fe] group-hover:text-black transition-all shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                        04
+                    </div>
+                    <h3 class="font-bold text-lg mb-2 text-white">Deploy & Suporte</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Colocamos seu sistema no ar com domínio próprio e canal direto de suporte para qualquer dúvida.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 relative z-10 bg-[#0a0f1d]/70 border-t border-[#182744]/70">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+                <span class="text-xs font-mono uppercase text-[#00f2fe] tracking-widest bg-[#00f2fe]/10 px-3 py-1 rounded-full border border-[#00f2fe]/30 inline-block font-semibold">
+                    <i class="fa-solid fa-circle-question mr-1.5"></i> Perguntas Frequentes
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold">Tire todas as suas dúvidas</h2>
+                <p class="text-slate-400 text-sm">
+                    Transparência em primeiro lugar para você contratar com total segurança.
+                </p>
+            </div>
+
+            <div class="space-y-4" id="faq-accordion">
+                
+                <!-- FAQ Item 1 -->
+                <div class="glass-card rounded-2xl border border-[#182744] overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 text-left flex items-center justify-between font-semibold text-slate-200 hover:text-[#00f2fe] transition-colors focus:outline-none">
+                        <span>Como funciona o processo de pagamento?</span>
+                        <i class="fa-solid fa-chevron-down text-[#00f2fe] transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#182744]/50 pt-3">
+                        Trabalhamos com modelo seguro por marcos: normalmente 50% de entrada no início do projeto e 50% na homologação/entrega final após sua total aprovação. Aceitamos PIX e parcelamento via cartão de crédito.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="glass-card rounded-2xl border border-[#182744] overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 text-left flex items-center justify-between font-semibold text-slate-200 hover:text-[#00f2fe] transition-colors focus:outline-none">
+                        <span>Quanto tempo leva para meu sistema ficar pronto?</span>
+                        <i class="fa-solid fa-chevron-down text-[#00f2fe] transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#182744]/50 pt-3">
+                        Depende da complexidade: assistentes de IA e automações geralmente ficam prontos em 5 a 8 dias. Web Apps e sistemas de gestão completos para PMEs costumam levar de 10 a 20 dias úteis.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="glass-card rounded-2xl border border-[#182744] overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 text-left flex items-center justify-between font-semibold text-slate-200 hover:text-[#00f2fe] transition-colors focus:outline-none">
+                        <span>O código-fonte e o sistema serão meus?</span>
+                        <i class="fa-solid fa-chevron-down text-[#00f2fe] transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#182744]/50 pt-3">
+                        Sim! Ao finalizar e quitar o projeto, todo o código-fonte, banco de dados e acessos de hospedagem pertencem 100% a você e à sua empresa. Sem travas ou dependências forçadas.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="glass-card rounded-2xl border border-[#182744] overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 text-left flex items-center justify-between font-semibold text-slate-200 hover:text-[#00f2fe] transition-colors focus:outline-none">
+                        <span>Vocês oferecem garantia e suporte após a entrega?</span>
+                        <i class="fa-solid fa-chevron-down text-[#00f2fe] transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#182744]/50 pt-3">
+                        Sim! Todos os nossos projetos contam com garantia inicial de 30 dias para qualquer correção de bugs ou ajustes finos sem nenhum custo adicional. Também oferecemos planos mensais de evolução e manutenção contínua.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 5 -->
+                <div class="glass-card rounded-2xl border border-[#182744] overflow-hidden">
+                    <button onclick="toggleFaq(this)" class="w-full p-5 text-left flex items-center justify-between font-semibold text-slate-200 hover:text-[#00f2fe] transition-colors focus:outline-none">
+                        <span>E se meu modelo de negócio for muito específico?</span>
+                        <i class="fa-solid fa-chevron-down text-[#00f2fe] transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content hidden px-5 pb-5 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-[#182744]/50 pt-3">
+                        É exatamente essa nossa especialidade! Softwares prontos de prateleira engessam sua rotina. Nós construímos sistemas adaptados rigorosamente às regras da sua empresa.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact & Direct Support Section -->
+    <section id="contato" class="py-24 relative z-10 border-t border-[#182744]/70">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Direct Contacts Box -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase text-[#00f2fe] tracking-widest bg-[#00f2fe]/10 px-3 py-1 rounded-full border border-[#00f2fe]/30 inline-block font-semibold">
+                            <i class="fa-solid fa-headset mr-1.5"></i> Canais Oficiais
+                        </span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold mt-3">Vamos conversar sobre seu projeto?</h2>
+                        <p class="text-slate-400 text-sm mt-3 leading-relaxed">
+                            Fale diretamente com nossa equipe técnica para tirar dúvidas, validar ideias ou agendar uma demonstração sem compromisso.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        
+                        <!-- Telegram Button -->
+                        <a href="https://t.me/SuportCodSolve" target="_blank" rel="noopener noreferrer" class="glass-card p-5 rounded-2xl flex items-center gap-4 hover:border-[#00f2fe] transition-all group">
+                            <div class="w-13 h-13 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-brands fa-telegram"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-mono text-slate-400 uppercase font-semibold">Suporte via Telegram</span>
+                                <span class="font-bold text-slate-100 group-hover:text-[#00f2fe] transition-colors text-base">@SuportCodSolve</span>
+                            </div>
+                        </a>
+
+                        <!-- WhatsApp & Phone Button -->
+                        <a href="https://wa.me/5585986506342?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20CodeSolve%20e%20gostaria%20de%20conversar." target="_blank" rel="noopener noreferrer" class="glass-card p-5 rounded-2xl flex items-center gap-4 hover:border-[#00f2fe] transition-all group">
+                            <div class="w-13 h-13 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <span class="block text-xs font-mono text-slate-400 uppercase font-semibold">WhatsApp & Telefone</span>
+                                <span class="font-bold text-slate-100 group-hover:text-[#00f2fe] transition-colors text-base">(85) 98650-6342</span>
+                            </div>
+                        </a>
+
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-[#0d1527]/70 border border-[#182744] space-y-2 text-xs text-slate-400">
+                        <div class="flex items-center gap-2 text-slate-300 font-semibold">
+                            <i class="fa-solid fa-shield-check text-[#00f2fe]"></i> Atendimento Humanizado & Rápido
+                        </div>
+                        <p>Respondemos em média em menos de 15 minutos em horário comercial.</p>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-7">
+                    <div class="glass-card rounded-3xl p-8 sm:p-10 border border-[#00f2fe]/30 shadow-2xl relative">
+                        <h3 class="text-2xl font-bold mb-2 flex items-center gap-2.5">
+                            <i class="fa-solid fa-paper-plane text-[#00f2fe]"></i> Envie uma mensagem rápida
+                        </h3>
+                        <p class="text-xs text-slate-400 mb-6">Preencha os campos abaixo e nosso time técnico responderá diretamente no seu WhatsApp.</p>
+
+                        <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">Seu Nome *</label>
+                                    <input type="text" id="form-name" required class="w-full bg-[#070b14]/90 border border-[#182744] rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-[#00f2fe] transition-colors" placeholder="Ex: Carlos Silva">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">Empresa / Negócio</label>
+                                    <input type="text" id="form-company" class="w-full bg-[#070b14]/90 border border-[#182744] rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-[#00f2fe] transition-colors" placeholder="Ex: Barbearia ou Loja Virtual">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">WhatsApp para Retorno *</label>
+                                <input type="tel" id="form-phone" required class="w-full bg-[#070b14]/90 border border-[#182744] rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-[#00f2fe] transition-colors" placeholder="(85) 98765-4321">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">Descreva seu desafio ou ideia *</label>
+                                <textarea id="form-message" rows="4" required class="w-full bg-[#070b14]/90 border border-[#182744] rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-[#00f2fe] transition-colors" placeholder="Ex: Preciso de um software para organizar meus agendamentos e mandar lembretes automáticos..."></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full py-4 bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-extrabold rounded-xl shadow-[0_0_20px_rgba(0,242,254,0.3)] hover:shadow-[0_0_35px_rgba(0,242,254,0.6)] transition-all flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                                <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem para CodeSolve
+                            </button>
+                        </form>
+
+                        <!-- Toast Feedback Container -->
+                        <div id="form-toast" class="hidden mt-4 p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 text-xs flex items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-lg text-emerald-400"></i>
+                            <div>
+                                <strong>Mensagem pronta!</strong> Redirecionando para o WhatsApp do suporte da CodeSolve...
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-14 border-t border-[#182744] bg-[#070b14] font-sans relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                
+                <div class="flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-[#0d1527] border border-[#00f2fe]/40 flex items-center justify-center p-1.5 text-[#00f2fe] shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                        <img src="assets/logo.png" alt="CodeSolve Logo" class="w-full h-full object-contain">
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl text-white font-mono">Code<span class="text-[#00f2fe]">Solve</span></span>
+                        <p class="text-xs text-slate-400 font-medium">Transformando desafios em linhas de código.</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400 font-medium">
+                    <a href="#inicio" class="hover:text-[#00f2fe] transition-colors">Início</a>
+                    <a href="#servicos" class="hover:text-[#00f2fe] transition-colors">Serviços</a>
+                    <a href="#solucoes" class="hover:text-[#00f2fe] transition-colors">Soluções</a>
+                    <a href="#simulador" class="hover:text-[#00f2fe] transition-colors">Simulador</a>
+                    <a href="#faq" class="hover:text-[#00f2fe] transition-colors">FAQ</a>
+                    <a href="#contato" class="hover:text-[#00f2fe] transition-colors">Contato</a>
+                </div>
+
+                <div class="text-center md:text-right text-xs text-slate-500 font-mono space-y-1">
+                    <p>© 2026 CodeSolve. Todos os direitos reservados.</p>
+                    <p class="text-slate-400">Telegram: <a href="https://t.me/SuportCodSolve" target="_blank" class="hover:text-[#00f2fe]">@SuportCodSolve</a> | WhatsApp: <a href="https://wa.me/5585986506342" target="_blank" class="hover:text-[#00f2fe]">(85) 98650-6342</a></p>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Action Button -->
+    <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <a href="https://wa.me/5585986506342?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20CodeSolve%20e%20gostaria%20de%20um%20atendimento." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp" class="group relative w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:shadow-[0_0_35px_rgba(16,185,129,0.8)] transition-all transform hover:scale-110">
+            <i class="fa-brands fa-whatsapp text-3xl"></i>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#00f2fe] rounded-full border-2 border-[#070b14] pulse-beacon"></span>
+        </a>
+    </div>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        // -------------------------------------------------------------
+        // BACKGROUND BLURRED PYTHON TYPING STREAM ANIMATION
+        // -------------------------------------------------------------
+        const pythonStreamCode = [
+            "# =================================================================",
+            "# CODESOLVE INTELLIGENT RUNTIME v3.4 [PROD_ACTIVE]",
+            "# Transforming Challenges into Code & Autonomous Workflows",
+            "# =================================================================",
+            "import asyncio",
+            "import datetime",
+            "from typing import Dict, List, Optional",
+            "from codesolve.neural import NeuralOrchestrator, WhatsAppGateway",
+            "from codesolve.cloud import DatabaseCluster, MicroserviceNode",
+            "",
+            "class CodeSolveCoreSystem:",
+            "    \"\"\"Núcleo inteligente para Web Apps e Automações Sob Medida\"\"\"",
+            "    def __init__(self, partner_id: str = 'Cliente_CodeSolve'):",
+            "        self.partner = partner_id",
+            "        self.uptime_sla = 0.9999",
+            "        self.neural_agent = NeuralOrchestrator(model='gemini-flash', memory=True)",
+            "        self.gateway = WhatsAppGateway(auto_reply=True, encrypt_e2e=True)",
+            "        self.cluster = DatabaseCluster(ssl_active=True, pool_size=50)",
+            "",
+            "    async def initialize_pipeline(self) -> Dict[str, str]:",
+            "        print(f'[>] Provisionando infraestrutura dedicada para: {self.partner}')",
+            "        await self.cluster.connect(region='sa-east-1')",
+            "        await self.gateway.bind_webhook(endpoint='/v1/webhook/leads')",
+            "        ",
+            "        # Ativacao de assistente virtual IA 24/7 com qualificacao instantanea",
+            "        bot_status = await self.neural_agent.deploy(skills=['Agendamento', 'Orcamentos', 'PIX'])",
+            "        print(f'[✓] Assistente IA CodeSolve operacional: {bot_status}')",
+            "        return {",
+            "            'status': 'ONLINE_PRODUCTION',",
+            "            'latency': '0.18s',",
+            "            'security': '256_BIT_ENCRYPTION',",
+            "            'response_rate': '100%_AUTOMATED'",
+            "        }",
+            "",
+            "    async def listen_and_process(self):",
+            "        \"\"\"Processamento contínuo de rotinas em segundo plano\"\"\"",
+            "        async for request in self.gateway.stream():",
+            "            lead = await self.neural_agent.qualify(request.data)",
+            "            if lead.wants_proposal:",
+            "                await self.gateway.send_proposal(lead.phone, scope=lead.scope)",
+            "                print(f'[✓] Proposta comercial despachada para {lead.phone}')",
+            "",
+            "# Executando loop de alta performance...",
+            "if __name__ == '__main__':",
+            "    core = CodeSolveCoreSystem('Sua_Empresa')",
+            "    asyncio.run(core.initialize_pipeline())",
+            "    # Sistema operando 24 horas por dia com máxima eficiência..."
+        ].join('\n');
+
+        const bgCodeElement = document.getElementById('python-bg-code');
+        let charIndex = 0;
+        const typingSpeed = 35; // ms per char
+
+        function streamPythonCode() {
+            if (!bgCodeElement) return;
+
+            if (charIndex <= pythonStreamCode.length) {
+                bgCodeElement.textContent = pythonStreamCode.slice(0, charIndex) + (charIndex % 2 === 0 ? '▌' : '');
+                charIndex += 1;
+                setTimeout(streamPythonCode, typingSpeed);
+            } else {
+                // Keep cursor blinking when done, then restart after a brief moment
+                setTimeout(() => {
+                    charIndex = 0;
+                    streamPythonCode();
+                }, 6000);
+            }
+        }
+        // Start typing after brief page load
+        setTimeout(streamPythonCode, 300);
+
+        // -------------------------------------------------------------
+        // MOBILE NAVIGATION
+        // -------------------------------------------------------------
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.classList.remove('fa-xmark');
+                menuIcon.classList.add('fa-bars');
+            } else {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-xmark');
+            }
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('fa-xmark');
+                menuIcon.classList.add('fa-bars');
+            });
+        });
+
+        // -------------------------------------------------------------
+        // TERMINAL DEMO BUTTON
+        // -------------------------------------------------------------
+        function runCodeDemo(button) {
+            const outputBox = document.getElementById('code-output-box');
+            button.disabled = true;
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Executando...';
+            
+            setTimeout(() => {
+                outputBox.classList.remove('hidden');
+                button.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Sucesso';
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fa-solid fa-play mr-1"></i> Executar';
+                }, 3000);
+            }, 800);
+        }
+
+        // -------------------------------------------------------------
+        // PROJECT ESTIMATOR SIMULATOR
+        // -------------------------------------------------------------
+        let selectedType = null;
+        let basePrice = 0;
+        let baseDays = 0;
+
+        function selectType(type, price, days) {
+            selectedType = type;
+            basePrice = price;
+            baseDays = days;
+
+            document.querySelectorAll('.calc-type-btn').forEach(btn => {
+                btn.classList.remove('border-[#00f2fe]', 'bg-[#00f2fe]/20', 'shadow-[0_0_15px_rgba(0,242,254,0.3)]');
+            });
+
+            const activeBtn = document.getElementById(`btn-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-[#00f2fe]', 'bg-[#00f2fe]/20', 'shadow-[0_0_15px_rgba(0,242,254,0.3)]');
+            }
+
+            const typeLabels = {
+                'webapp': 'Web App Personalizado',
+                'sistema': 'Sistema para PME',
+                'bot': 'Assistente Virt. / IA'
+            };
+            document.getElementById('summary-type').innerText = typeLabels[type] || type;
+
+            updateCalc();
+        }
+
+        function updateCalc() {
+            if (!selectedType) return;
+
+            let extraCount = 0;
+            let extraPrice = 0;
+            let extraDays = 0;
+
+            if (document.getElementById('check-auth').checked) {
+                extraCount++;
+                extraPrice += 300;
+                extraDays += 2;
+            }
+            if (document.getElementById('check-whatsapp').checked) {
+                extraCount++;
+                extraPrice += 400;
+                extraDays += 3;
+            }
+            if (document.getElementById('check-dash').checked) {
+                extraCount++;
+                extraPrice += 450;
+                extraDays += 3;
+            }
+            if (document.getElementById('check-pix').checked) {
+                extraCount++;
+                extraPrice += 350;
+                extraDays += 2;
+            }
+
+            document.getElementById('summary-extras').innerText = extraCount > 0 ? `${extraCount} selecionados` : 'Nenhum';
+            const totalPrice = basePrice + extraPrice;
+            const totalDays = baseDays + extraDays;
+            
+            document.getElementById('summary-time').innerText = `~ ${totalDays} a ${totalDays + 5} dias`;
+            document.getElementById('summary-price').innerText = `R$ ${totalPrice.toLocaleString('pt-BR')},00`;
+        }
+
+        function sendToWhatsApp() {
+            if (!selectedType) {
+                alert('Por favor, escolha ao menos um tipo de solução antes de enviar!');
+                return;
+            }
+
+            const typeText = document.getElementById('summary-type').innerText;
+            const priceText = document.getElementById('summary-price').innerText;
+            const timeText = document.getElementById('summary-time').innerText;
+            const notes = document.getElementById('calc-notes').value.trim();
+
+            const selectedExtras = [];
+            if (document.getElementById('check-auth').checked) selectedExtras.push('Login Seguro de Usuários');
+            if (document.getElementById('check-whatsapp').checked) selectedExtras.push('Integração WhatsApp/Telegram');
+            if (document.getElementById('check-dash').checked) selectedExtras.push('Dashboard com Relatórios');
+            if (document.getElementById('check-pix').checked) selectedExtras.push('Pagamentos PIX Automático');
+
+            let message = `Olá CodeSolve! Fiz uma simulação pelo simulador do site:\n\n`;
+            message += `📌 *Solução:* ${typeText}\n`;
+            message += `⏱️ *Prazo Estimado:* ${timeText}\n`;
+            message += `💰 *Estimativa:* ${priceText}\n`;
+            if (selectedExtras.length > 0) {
+                message += `🧩 *Módulos Extras:* ${selectedExtras.join(', ')}\n`;
+            }
+            if (notes) {
+                message += `📝 *Detalhes:* ${notes}\n`;
+            }
+            message += `\nGostaria de alinhar o início do projeto com vocês!`;
+
+            const encoded = encodeURIComponent(message);
+            window.open(`https://wa.me/5585986506342?text=${encoded}`, '_blank');
+        }
+
+        // -------------------------------------------------------------
+        // DEMO AI CHAT ASSISTANT
+        // -------------------------------------------------------------
+        const chatBox = document.getElementById('chat-box');
+        const chatInput = document.getElementById('chat-input');
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendQuickPrompt(promptText) {
+            chatInput.value = promptText;
+            sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // User Message Bubble
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'flex items-start justify-end gap-2.5';
+            userMsgDiv.innerHTML = `
+                <div class="bg-gradient-to-r from-[#00f2fe]/20 to-[#4facfe]/20 p-3.5 rounded-2xl rounded-tr-none border border-[#00f2fe]/40 max-w-[85%] text-slate-100 shadow-sm leading-relaxed">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            chatBox.appendChild(userMsgDiv);
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Typing Indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'flex items-start gap-2.5';
+            typingDiv.innerHTML = `
+                <div class="w-8 h-8 rounded-lg bg-[#0d1527] border border-[#00f2fe]/40 p-1 flex items-center justify-center shrink-0">
+                    <img src="assets/logo.png" alt="CS" class="w-full h-full object-contain">
+                </div>
+                <div class="bg-[#0d1527] px-4 py-3 rounded-2xl rounded-tl-none border border-[#182744] flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-[#00f2fe] typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#00f2fe] typing-dot"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#00f2fe] typing-dot"></span>
+                </div>
+            `;
+            chatBox.appendChild(typingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Automated Bot Reply
+            setTimeout(() => {
+                const currentIndicator = document.getElementById('typing-indicator');
+                if (currentIndicator) currentIndicator.remove();
+
+                let botReply = "Entendi perfeitamente sua pergunta! Na CodeSolve, desenvolvemos soluções de software 100% personalizadas para pequenas empresas e criadores. Você pode chamar nossa equipe direto no WhatsApp (85) 98650-6342 para tirar todas as dúvidas!";
+
+                const lower = text.toLowerCase();
+                if (lower.includes('custa') || lower.includes('preco') || lower.includes('preço') || lower.includes('valor')) {
+                    botReply = "Os investimentos começam a partir de R$ 850 para Assistentes Inteligentes de IA e R$ 1.200 a R$ 1.600 para Web Apps e Sistemas PME! Você pode usar a ferramenta de <strong>Simulador</strong> logo acima para calcular seu escopo exato.";
+                } else if (lower.includes('prazo') || lower.includes('tempo') || lower.includes('demora')) {
+                    botReply = "Nossas entregas são ultra ágeis! Projetos com assistente virtual ou automação costumam ser entregues em <strong>5 a 8 dias</strong>. Já sistemas completos e Web Apps levam em média de <strong>10 a 20 dias úteis</strong>.";
+                } else if (lower.includes('bot') || lower.includes('whatsapp') || lower.includes('telegram')) {
+                    botReply = "Sim! Desenvolvemos bots inteligentes para WhatsApp e Telegram que atendem seus clientes 24h, agendam horários, enviam PIX de cobrança e filtram leads automaticamente!";
+                } else if (lower.includes('suporte') || lower.includes('garantia') || lower.includes('pos')) {
+                    botReply = "Damos <strong>30 dias de garantia completa</strong> após a entrega para qualquer ajuste ou correção. Além disso, você tem canal direto com os desenvolvedores via Telegram e WhatsApp.";
+                } else if (lower.includes('delivery') || lower.includes('restaurante') || lower.includes('barbearia') || lower.includes('clinica')) {
+                    botReply = "Temos templates e arquiteturas prontas ideais para agendamentos de barbearias, clínicas, restaurantes e lojas locais! Reduz o tempo de entrega pela metade.";
+                }
+
+                const botMsgDiv = document.createElement('div');
+                botMsgDiv.className = 'flex items-start gap-2.5';
+                botMsgDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-lg bg-[#0d1527] border border-[#00f2fe]/40 p-1 flex items-center justify-center shrink-0">
+                        <img src="assets/logo.png" alt="CS" class="w-full h-full object-contain">
+                    </div>
+                    <div class="bg-[#0d1527] p-3.5 rounded-2xl rounded-tl-none border border-[#182744] max-w-[85%] text-slate-200 leading-relaxed shadow-sm">
+                        ${botReply}
+                    </div>
+                `;
+                chatBox.appendChild(botMsgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 850);
+        }
+
+        function escapeHtml(string) {
+            return String(string).replace(/[&<>"']/g, function (s) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[s];
+            });
+        }
+
+        // -------------------------------------------------------------
+        // FAQ ACCORDION
+        // -------------------------------------------------------------
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            const isHidden = content.classList.contains('hidden');
+
+            document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('#faq-accordion i').forEach(ic => {
+                ic.classList.remove('rotate-180');
+            });
+
+            if (isHidden) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            }
+        }
+
+        // -------------------------------------------------------------
+        // CONTACT FORM TO WHATSAPP
+        // -------------------------------------------------------------
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('form-name').value.trim();
+            const company = document.getElementById('form-company').value.trim();
+            const phone = document.getElementById('form-phone').value.trim();
+            const message = document.getElementById('form-message').value.trim();
+
+            const toast = document.getElementById('form-toast');
+            toast.classList.remove('hidden');
+
+            let waMsg = `Olá CodeSolve! Nova mensagem via formulário do site:\n\n`;
+            waMsg += `👤 *Nome:* ${name}\n`;
+            if (company) waMsg += `🏢 *Empresa:* ${company}\n`;
+            waMsg += `📱 *Telefone/WhatsApp:* ${phone}\n`;
+            waMsg += `💬 *Desafio/Projeto:* ${message}\n\n`;
+            waMsg += `Aguardo retorno!`;
+
+            const encoded = encodeURIComponent(waMsg);
+
+            setTimeout(() => {
+                window.open(`https://wa.me/5585986506342?text=${encoded}`, '_blank');
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
